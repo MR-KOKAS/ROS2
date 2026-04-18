@@ -1,0 +1,27 @@
+<launch>
+    <arg name="rviz" default="false"/>
+    <arg name="gazebo" default="false"/>
+    <arg name="joint_gui" default="false"/>
+    <arg name="use_sim_time" default="false"/>
+
+    <let name="urdf_path" value="$(find-pkg-share puzzlebot_description)/urdf/mcr2_robots/puzzlebot_jetson_lidar_ed.xacro"/>
+    <let name="rviz" value="$(find-pkg-share puzzlebot_description)/rviz/puzzlebot_description.rviz"/>
+    <let name="gazebo_path" value="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py"/>
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" value="$(command 'xacro $(var urdf_path)')" />
+        <param name="use_sim_time" value="$(var use_sim_time)" />
+    </node>
+
+    <node pkg="rviz2" exec="rviz2" output="screen" if="$(var rviz)" args="-d $(var rviz_config_path)">
+        <param name="use_sim_time" value="$(var use_sim_time)" />
+    </node>
+
+    <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" if="$(var joint_gui)" output="screen" />
+
+    <include file="$(var gazebo_path)" if="$(var gazebo)">
+        <arg name="gz_args" value="empty.sdf -r" />
+    </include>
+
+    <node pkg="ros_gz_sim" exec="create" if="$(var gazebo)" args="-name puzzlebot -topic robot_description" output="screen" />
+</launch>
