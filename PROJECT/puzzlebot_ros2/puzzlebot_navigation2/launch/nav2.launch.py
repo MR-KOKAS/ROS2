@@ -14,7 +14,7 @@ def launch_setup(context, *args, **kwargs):
 
     map_dir = LaunchConfiguration(
         'map',
-        default=os.path.join(base_path, 'maps', f'{map_value}_map.yaml'))
+        default=os.path.join(base_path, 'maps', f'{map_value}.yaml'))
 
     param_dir = LaunchConfiguration(
         'params_file',
